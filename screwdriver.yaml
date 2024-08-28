@@ -1,18 +1,18 @@
+
+# Define the jobs in the pipeline
 jobs:
   main:
+    requires: [~commit, ~pr]
     image: node:14
     steps:
       - init: echo "Initializing..."
       - install: npm install
       - test: npm test
-      - custom_script: |
-          # Assuming 'my_script.sh' should be run as part of the pipeline
-          bash ./my_script.sh
-      - upload_coverage: |
-          # Adding a check to see if coverage command exists or needs to be executed
-          if [ -f coverage/lcov.info ]; then
-            echo "Uploading coverage..."
-            # Ensure the correct command or script is referenced here
-            # bash getUploadCoverageCmd.sh (uncomment and correct if applicable)
-          fi
+      - custom_script: bash ./my_script.sh
+      
+  second_job:
+    requires: [main]
+    image: node:14
+    steps:
+      - echo: echo "Running second job after main"
 
